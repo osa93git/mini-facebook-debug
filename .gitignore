@@ -1,0 +1,33 @@
+# ================================
+# Ignorowanie plików systemowych
+# ================================
+.DS_Store      # macOS
+Thumbs.db      # Windows
+desktop.ini    # Windows
+
+# ================================
+# Ignorowanie edytorów
+# ================================
+.vscode/       # Visual Studio Code
+.idea/         # IntelliJ IDEA (opcjonalnie, jeśli ktoś inny używa)
+
+# ================================
+# Ignorowanie zależności
+# ================================
+node_modules/  # NPM - frontend
+*.jar          # Java build artifacts
+*.war
+*.class        # Skompilowane klasy Javy
+*.iml          # IntelliJ project file
+
+# ================================
+# Ignorowanie buildów
+# ================================
+dist/          # Build folder (Vite)
+build/         # Uniwersalny build
+target/        # Maven/Gradle
+
+# ================================
+# Ignorowanie logów
+# ================================
+*.log          # Pliki logów aplikacji
