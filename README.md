@@ -8,7 +8,7 @@ Profil użytkownika Piotr Ossowski jest mój. Jest to moja wizytówka. Pod konie
 
 ## 🧩 Stack technologiczny
 
-- ⚙️ **Backend**: Java 23, Spring Boot
+- ⚙️ **Backend**: Java 21, Spring Boot
 - 🌐 **Frontend**: React + Vite
 - 🗃 **Baza danych**: PostgreSQL
 - 🐘 **ORM**: Spring Data JPA
