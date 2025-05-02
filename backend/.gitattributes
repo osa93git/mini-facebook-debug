@@ -1,3 +1,15 @@
-/gradlew text eol=lf
-*.bat text eol=crlf
-*.jar binary
+# Pliki tekstowe: zawsze LF (unikamy CRLF warningów)
+*.java      text eol=lf
+*.gradle    text eol=lf
+*.properties text eol=lf
+*.md        text eol=lf
+*.yml       text eol=lf
+
+# Pliki wsadowe Windows
+*.bat       text eol=crlf
+
+# Pliki binarne
+*.jar       binary
+
+# Gradle wrapper (konkretny plik)
+gradlew     text eol=lf
