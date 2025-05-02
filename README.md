@@ -55,6 +55,7 @@ Detailed setup instructions will be added after backend and frontend configurati
 
 ## ✍️ Progress Log
 
-> 2025-04-24 – Repository created, folder structure initialized, .gitignore configured
-> 2025-05-02 – First working data flow: controller → service → repository → database 
-> 2025-05-02 – Translated README to English
+- 2025-04-24 – Initialized repository and folder structure
+- 2025-04-30 – Connected PostgreSQL with Docker
+- 2025-05-02 – First working data flow: controller → service → repository → database
+- 2025-05-02 – Translated both README files to English
