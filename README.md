@@ -1,56 +1,60 @@
-# 🧑‍🤝‍🧑 Mini-Facebook – Projekt Rekrutacyjny
+# 🧑‍🤝‍🧑 Mini-Facebook – Recruitment Project
 
-Minimalna wersja serwisu społecznościowego inspirowana pierwszym Facebookiem. Projekt tworzony jako portfolio backend/frontend dewelopera.
-Aplikacja pozwala użytkownikom tworzyć konta, przeglądać profile i dodawać posty – wszystko w minimalistycznej formie, z zachowaniem podziału frontend/backend.
-Profil użytkownika Piotr Ossowski jest mój. Jest to moja wizytówka. Pod koniec projektu bedzie on hostowany na Render.com i możliwy do przeklikania, oraz założenia własnego konta na mojej stronie.
+A minimal social networking platform inspired by the early version of Facebook. This project is being developed as a fullstack portfolio to showcase backend and frontend skills.
+
+The application allows users to create accounts, browse profiles, and publish posts – all presented in a clean and minimalistic interface with a clear separation between backend and frontend layers.
+
+The profile of user **Piotr Ossowski** is mine and serves as a personal showcase. Once the project is complete, it will be deployed on **Render.com**, and publicly accessible for exploring and account registration.
 
 ---
 
-## 🧩 Stack technologiczny
+## 🧩 Tech Stack
 
 - ⚙️ **Backend**: Java 21, Spring Boot
 - 🌐 **Frontend**: React + Vite
-- 🗃 **Baza danych**: PostgreSQL
+- 🗃️ **Database**: PostgreSQL
 - 🐘 **ORM**: Spring Data JPA
-- 🐳 (opcjonalnie) Docker + docker-compose
+- 🐳 (optional) Docker + docker-compose
 
 ---
 
-## 🚧 Status projektu
+## 🚧 Project Status
 
-> Projekt w trakcie rozwoju  
-Aktualny etap: ✅ Inicjalizacja repozytorium i struktury katalogów
-
----
-
-## 🛠️ Planowane funkcje
-
-- [ ] Rejestracja i logowanie użytkowników
-- [ ] Profil użytkownika (imię, nazwisko, zdjęcie)
-- [ ] Tablica postów
-- [ ] Dodawanie postów
-- [ ] Przeglądanie postów użytkowników
-- [ ] Integracja z PostgreSQL
-- [ ] Styl minimalistyczny (bez nadmiaru CSS)
+> Currently in development  
+Current stage: ✅ Repository initialized, base folder structure created
 
 ---
 
-## 📦 Struktura katalogów
+## 🛠️ Planned Features
+
+- [ ] User registration & login
+- [ ] User profile (first name, last name, profile photo)
+- [ ] Post feed (user timeline)
+- [ ] Adding posts
+- [ ] Viewing posts from other users
+- [ ] PostgreSQL integration
+- [ ] Minimalist styling (no CSS frameworks)
+
+---
+
+## 📦 Project Structure
 
 ```plaintext
 mini-facebook/
-├── backend/      # Spring Boot (Java 23)
+├── backend/      # Spring Boot (Java 21)
 ├── frontend/     # React + Vite
-├── db/           # Skrypty SQL
+├── db/           # SQL scripts (if needed)
 ├── .gitignore
 ├── README.md
-└── docker-compose.yml (opcjonalnie)
+└── docker-compose.yml (optional)
 ```
 
-## 🔧 Jak uruchomić (placeholder)
+## 🔧 How to Run (placeholder)
 
-Instrukcja pojawi się, gdy backend i frontend zostaną skonfigurowane.
+Detailed setup instructions will be added after backend and frontend configuration is complete.
 
-## ✍️ Dziennik postępów
+## ✍️ Progress Log
 
-> 2025-04-24 – Utworzenie repozytorium, struktura projektu, konfiguracja `.gitignore`
+> 2025-04-24 – Repository created, folder structure initialized, .gitignore configured
+> 2025-05-02 – First working data flow: controller → service → repository → database 
+> 2025-05-02 – Translated README to English

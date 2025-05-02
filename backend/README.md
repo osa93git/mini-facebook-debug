@@ -1,27 +1,28 @@
 # 🔧 Mini-Facebook – Backend
 
-REST API zbudowane w Spring Boot, odpowiadające za rejestrację użytkowników, zarządzanie profilami i obsługę postów. Backend łączy się z bazą danych PostgreSQL uruchamianą w kontenerze Docker.
+This is the backend of the Mini-Facebook project – a REST API built with Spring Boot.  
+It handles user registration, profile management, and post operations.  
+The backend communicates with a PostgreSQL database running inside a Docker container.
 
 ---
 
-## 🧩 Stack technologiczny (backend)
+## 🧩 Backend Tech Stack
 
 - Java 21 (LTS)
 - Spring Boot
 - Spring Web (REST API)
 - Spring Data JPA
-- PostgreSQL (Docker)
-- (planowane) Spring Security
+- PostgreSQL (via Docker)
+- (planned) Spring Security
 
 ---
 
-## 📁 Struktura katalogów (warstwy)
+## 📁 Package Structure (layers)
 
 ```plaintext
 com/ossowski/backend/
 ├── controller/   # REST API
-├── model/        # Encje JPA
-├── repository/   # Interfejsy do bazy
-├── service/      # Logika biznesowa (opcjonalnie)
+├── model/        # JPA entities
+├── repository/   # Database access interfaces
+├── service/      # Business logic (optional)
 └── BackendApplication.java
-```
