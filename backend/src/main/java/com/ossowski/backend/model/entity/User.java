@@ -25,9 +25,11 @@ public class User {
     private UUID id;
 
     @Getter @Setter
+    @Column(nullable = false)
     private String firstName;
 
     @Getter @Setter
+    @Column(nullable = false)
     private String lastName;
 
     @Getter @Setter
@@ -38,11 +40,21 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String profilePhotoUrl;
+    
+    @Getter @Setter
+    @Column(nullable = false, length = 500)
+    private String bio;
+
+
     public User(String firstName, String lastName, String email, String password) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
+        this.profilePhotoUrl = generateDefaultPhotoUrl(email);
+        this.bio = "";
     }
 
     @Override
@@ -54,6 +66,9 @@ public class User {
             return false;
         }
         return Objects.equals(id, user.id);
+    }
+    private String generateDefaultPhotoUrl(String seed) {
+        return "https://api.dicebear.com/6.x/identicon/svg?seed=" + seed;
     }
 
     @Override
