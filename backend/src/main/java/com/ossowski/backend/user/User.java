@@ -1,4 +1,4 @@
-package com.ossowski.backend.model.entity;
+package com.ossowski.backend.user;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -40,6 +40,7 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    @Getter @Setter
     @Column(nullable = false)
     private String profilePhotoUrl;
     

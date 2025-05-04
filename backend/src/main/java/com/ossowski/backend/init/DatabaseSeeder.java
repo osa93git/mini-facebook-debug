@@ -3,8 +3,8 @@ package com.ossowski.backend.init;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import com.ossowski.backend.model.entity.User;
-import com.ossowski.backend.repository.UserRepository;
+import com.ossowski.backend.user.User;
+import com.ossowski.backend.user.UserRepository;
 
 @Component
 public class DatabaseSeeder implements CommandLineRunner {

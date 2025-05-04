@@ -26,3 +26,13 @@ com/ossowski/backend/
 ├── repository/   # Database access interfaces
 ├── service/      # Business logic (optional)
 └── BackendApplication.java
+```
+
+## ✅ Implemented Features – Users
+
+- [x] `GET /users` – list of all users (public data only)
+- [x] `GET /users/{id}` – public user profile by UUID
+- [x] `UserPublicDto` – shared DTO for both endpoints (no email, no password)
+- [x] Refactored project structure to production layout (`controller`, `service`, `repository`, `user`)
+- [x] Removed temporary `UserResponseDto` class
+- [x] Added getter and setter for `bio` field in `User` entity

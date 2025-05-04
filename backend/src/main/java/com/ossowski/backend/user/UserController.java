@@ -1,14 +1,12 @@
-package com.ossowski.backend.controller;
+package com.ossowski.backend.user;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.ossowski.backend.model.dto.UserResponseDto;
-import com.ossowski.backend.model.mapper.UserMapper;
-import com.ossowski.backend.service.UserService;
 
 @RestController
 @RequestMapping("/users")
@@ -21,15 +19,12 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserResponseDto> getAllUsers(){
-     return userService.getAllUsers()
-     .stream()
-     .map(UserMapper::toDto)
-     .toList();   
+    public List<UserPublicDto> getAllUsers(){
+     return userService.getAllUsers();
     }
-
-
-
-
+    @GetMapping("/{id}")
+    public UserPublicDto getUserById(@PathVariable("id") UUID id){
+        return userService.getUserById(id);
+    }
 
 }

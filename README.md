@@ -59,3 +59,4 @@ Detailed setup instructions will be added after backend and frontend configurati
 - 2025-04-30 – Connected PostgreSQL with Docker
 - 2025-05-02 – First working data flow: controller → service → repository → database
 - 2025-05-02 – Translated both README files to English
+- See [backend/README.md](backend/README.md) for backend implementation progress.
