@@ -36,3 +36,13 @@ com/ossowski/backend/
 - [x] Refactored project structure to production layout (`controller`, `service`, `repository`, `user`)
 - [x] Removed temporary `UserResponseDto` class
 - [x] Added getter and setter for `bio` field in `User` entity
+- [x] `GET /users/me` – current logged-in user (temporary static ID for now)
+
+## ✅ Implemented Features – Security
+
+- [x] Integrated Spring Security with stateless JWT authentication
+- [x] `POST /auth/login` – user authentication, returns JWT token
+- [x] `JwtAuthenticationFilter` – extracts and validates token from `Authorization` header
+- [x] `SecurityConfig` – permits `/auth/**`, protects `/users/me` and other endpoints
+- [x] `CustomUserDetailsService` – loads users from DB by email
+- [x] `JwtService` – token generation and verification

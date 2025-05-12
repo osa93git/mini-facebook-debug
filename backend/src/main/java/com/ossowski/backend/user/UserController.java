@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
-    public UserController(UserService userService){
+    public UserController(UserService userService, UserMapper userMapper){
         this.userService = userService;
+        this.userMapper = userMapper;
     }
 
     @GetMapping
@@ -25,6 +27,12 @@ public class UserController {
     @GetMapping("/{id}")
     public UserPublicDto getUserById(@PathVariable("id") UUID id){
         return userService.getUserById(id);
+    }
+
+    @GetMapping("/me")
+    public UserPublicDto getCurrentUser(){
+        User user = userService.getCurrentUser();
+        return userMapper.toPublicDto(user);
     }
 
 }
