@@ -1,4 +1,4 @@
-package com.ossowski.backend.security;
+package com.ossowski.backend.security.jwt;
 
 import java.io.IOException;
 
@@ -9,8 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.ossowski.backend.security.jwt.JwtService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

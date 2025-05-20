@@ -43,6 +43,7 @@ public class JwtService {
         .claim("firstName", user.getFirstName())
         .claim("lastName", user.getLastName())
         .claim("photo", user.getProfilePhotoUrl())
+        .claim("role", user.getRole().name())
         .setIssuedAt(new Date())
         .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
         .signWith(getSigningKey(), SignatureAlgorithm.HS256)

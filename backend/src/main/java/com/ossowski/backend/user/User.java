@@ -6,10 +6,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -52,7 +55,15 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 500)
     private String bio;
 
-    // ⚠️ Only used for controlled seeding (test user with fixed UUID)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Getter @Setter
+    private Role role = Role.USER;
+
+    @Column(nullable = false)
+    @Getter @Setter
+    private boolean profilePublic = false;
+
 
     public User(UUID id, String firstName, String lastName, String email, String password) {
         this.id = id;
@@ -101,7 +112,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override

@@ -13,49 +13,98 @@ The backend communicates with a PostgreSQL database running inside a Docker cont
 - Spring Web (REST API)
 - Spring Data JPA
 - PostgreSQL (via Docker)
-- (planned) Spring Security
+- Spring Security (JWT)
 
 ---
 
-## 📁 Package Structure (layers)
+## 📁 Package Structure (modular layout)
 
 ```plaintext
 com/ossowski/backend/
-├── controller/   # REST API
-├── model/        # JPA entities
-├── repository/   # Database access interfaces
-├── service/      # Business logic (optional)
+├── admin/         # Admin-specific features (e.g. user moderation, analytics)
+├── auth/          # Authentication controller and DTOs
+├── init/          # DB seeder, test user data
+├── security/      # Security configuration and logic
+│   ├── auth/       # Login, refresh endpoints
+│   ├── jwt/        # JWT token logic
+│   ├── model/      # Token entity, enums
+│   ├── repository/ # Token repository
+│   └── service/    # TokenService, JwtService
+├── user/          # User endpoints, DTOs, service, repository, model
 └── BackendApplication.java
 ```
 
-## ✅ Implemented Features – Users
+---
 
-- [x] `GET /users` – list of all users (public data only)
-- [x] `GET /users/{id}` – public user profile by UUID
-- [x] `UserPublicDto` – shared DTO for both endpoints (no email, no password)
-- [x] Refactored project structure to production layout (`controller`, `service`, `repository`, `user`)
-- [x] Removed temporary `UserResponseDto` class
-- [x] Added getter and setter for `bio` field in `User` entity
-- [x] `GET /users/me` – current logged-in user (temporary static ID for now)
+### ✅ Implemented Features – Users
 
-## ✅ Implemented Features – Security
+- `GET /users` – list of all users (public data only)
+- `GET /users/{id}` – public user profile by UUID
+- `GET /users/me` – current logged-in user (from token)
+- `UserPublicDto` – shared DTO for public user data
+- Extended `User` entity with `bio`, `profilePhotoUrl`, `role`
+- Added support for `Role` enum (`USER`, `ADMIN`)
+- Initial data seeding via `init` package
 
-- [x] Integrated Spring Security with stateless JWT authentication
-- [x] `POST /auth/login` – user authentication, returns JWT token
-- [x] `JwtAuthenticationFilter` – extracts and validates token from `Authorization` header
-- [x] `SecurityConfig` – permits `/auth/**`, protects `/users/me` and other endpoints
-- [x] `CustomUserDetailsService` – loads users from DB by email
-- [x] `JwtService` – token generation and verification
+---
 
-### ✅ Added JWT Authentication with Refresh Token Support
+### ✅ Implemented Features – Security
 
-- [x] `POST /auth/login` – user authentication, returns access token in JSON, refresh token in HttpOnly cookie
-- [x] `POST /auth/refresh` – issues new access token if valid refresh token cookie is present
-- [x] `JwtService` – access token includes userId, firstName, lastName, photo; refresh token minimal
-- [x] `TokenService` – manages token persistence, revocation, validation
-- [x] `Token` entity – stores token value, type, status, user owner
-- [x] `SecurityConfig` – disables sessions, allows `/auth/**`, enforces JWT on other endpoints
-- [x] `JwtAuthenticationFilter` – extracts and validates token from `Authorization: Bearer ...` header
-- [x] `CustomUserDetailsService` – loads `User` entity from DB via email, implements `UserDetails`
-- [x] `PasswordEncoder` – uses BCrypt to store hashed passwords in DB
-- [x] `LoginRequest` / `LoginResponse` DTOs – used for clean JSON login flow
+- Integrated Spring Security with stateless JWT authentication
+- `POST /auth/login` – user authentication, returns JWT token
+- `POST /auth/refresh` – refreshes access token via HttpOnly cookie
+- `JwtAuthenticationFilter` – extracts and validates token from `Authorization` header
+- `SecurityConfig` – permits `/auth/**`, protects other endpoints
+- `CustomUserDetailsService` – loads users from DB by email
+- `JwtService` – token generation, validation
+- `TokenService` – token persistence, revocation
+- `Token` entity – stores value, type (access/refresh), status, and user
+
+---
+
+### ✅ Implemented Features – Admin
+
+- `admin` package introduced for role-restricted operations
+- Created `AdminController` with placeholder endpoint ("admin panel")
+- Added `Role.ADMIN` with selective access
+
+🔜 **Planned:**
+
+- Admin-only endpoints to delete users
+- View visit logs
+
+---
+
+### ✅ JWT Authentication with Refresh Token Support
+
+- Access token stored in `Authorization: Bearer ...` header
+- Refresh token stored as `HttpOnly` cookie
+- `POST /auth/login` returns both tokens
+- `POST /auth/refresh` issues new access token if refresh token is valid
+- Refresh tokens stored in DB, associated with user and token type
+
+---
+
+### 🧪 Testing & Running
+
+- Run with Docker Compose: `docker-compose up`
+- Default DB: PostgreSQL on port `5432`
+- Preloaded users and roles available via `init/Seeder`
+
+---
+
+### 📌 Notes
+
+- Passwords are stored securely using BCrypt
+- Stateless JWT architecture ensures scalability
+- Full role-based access control (RBAC) built-in
+- Designed for separation of concerns via module-based packages
+
+---
+
+### 📦 Future Work
+
+- Admin panel with user logs & analytics
+- Post creation and feed
+- Comments and reactions
+- Friend requests and chat
