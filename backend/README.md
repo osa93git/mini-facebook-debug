@@ -46,3 +46,16 @@ com/ossowski/backend/
 - [x] `SecurityConfig` – permits `/auth/**`, protects `/users/me` and other endpoints
 - [x] `CustomUserDetailsService` – loads users from DB by email
 - [x] `JwtService` – token generation and verification
+
+### ✅ Added JWT Authentication with Refresh Token Support
+
+- [x] `POST /auth/login` – user authentication, returns access token in JSON, refresh token in HttpOnly cookie
+- [x] `POST /auth/refresh` – issues new access token if valid refresh token cookie is present
+- [x] `JwtService` – access token includes userId, firstName, lastName, photo; refresh token minimal
+- [x] `TokenService` – manages token persistence, revocation, validation
+- [x] `Token` entity – stores token value, type, status, user owner
+- [x] `SecurityConfig` – disables sessions, allows `/auth/**`, enforces JWT on other endpoints
+- [x] `JwtAuthenticationFilter` – extracts and validates token from `Authorization: Bearer ...` header
+- [x] `CustomUserDetailsService` – loads `User` entity from DB via email, implements `UserDetails`
+- [x] `PasswordEncoder` – uses BCrypt to store hashed passwords in DB
+- [x] `LoginRequest` / `LoginResponse` DTOs – used for clean JSON login flow
