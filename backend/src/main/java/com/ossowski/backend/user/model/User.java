@@ -1,4 +1,4 @@
-package com.ossowski.backend.user;
+package com.ossowski.backend.user.model;
 
 import java.util.Collection;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.ossowski.backend.security.jwt;
+package com.ossowski.backend.security.auth.jwt;
 
 import java.security.Key;
 import java.util.Date;
@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 import org.springframework.stereotype.Service;
 
-import com.ossowski.backend.user.User;
+import com.ossowski.backend.user.model.User;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

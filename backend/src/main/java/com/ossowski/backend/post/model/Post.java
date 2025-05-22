@@ -1,12 +1,12 @@
-package com.ossowski.backend.post;
+package com.ossowski.backend.post.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.ossowski.backend.comment.Comment;
-import com.ossowski.backend.user.User;
+import com.ossowski.backend.comment.model.Comment;
+import com.ossowski.backend.user.model.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -17,10 +17,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Post {
 
     @Id

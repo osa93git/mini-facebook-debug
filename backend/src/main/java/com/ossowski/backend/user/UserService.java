@@ -3,6 +3,9 @@ package com.ossowski.backend.user;
 import java.util.List;
 import java.util.UUID;
 
+import com.ossowski.backend.user.dto.UserMapper;
+import com.ossowski.backend.user.dto.UserPublicDto;
+import com.ossowski.backend.user.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;

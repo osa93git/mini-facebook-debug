@@ -5,10 +5,10 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.ossowski.backend.security.jwt.TokenType;
-import com.ossowski.backend.security.model.Token;
+import com.ossowski.backend.security.token.TokenType;
+import com.ossowski.backend.security.token.Token;
 import com.ossowski.backend.security.repository.TokenRepository;
-import com.ossowski.backend.user.User;
+import com.ossowski.backend.user.model.User;
 
 @Service
 public class TokenService {

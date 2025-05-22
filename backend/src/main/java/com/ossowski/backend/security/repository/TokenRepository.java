@@ -6,8 +6,8 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.ossowski.backend.security.model.Token;
-import com.ossowski.backend.user.User;
+import com.ossowski.backend.security.token.Token;
+import com.ossowski.backend.user.model.User;
 
 public interface TokenRepository extends JpaRepository<Token, UUID> {
     

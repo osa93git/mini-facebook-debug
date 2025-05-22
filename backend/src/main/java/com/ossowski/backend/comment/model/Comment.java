@@ -1,4 +1,4 @@
-package com.ossowski.backend.comment;
+package com.ossowski.backend.comment.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import com.ossowski.backend.post.Post;
-import com.ossowski.backend.user.User;
+import com.ossowski.backend.post.model.Post;
+import com.ossowski.backend.user.model.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -22,9 +22,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@NoArgsConstructor
+// @Builder
 public class Comment {
 
     @Id
@@ -67,6 +70,8 @@ public class Comment {
     private LocalDateTime createdAt;
 
     @ManyToMany
+    @Getter
+    @Setter
     @JoinTable(
             name = "comment_likes",
             joinColumns = @JoinColumn(name = "comment_id"),

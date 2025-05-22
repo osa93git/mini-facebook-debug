@@ -1,5 +1,6 @@
-package com.ossowski.backend.user;
+package com.ossowski.backend.user.dto;
 
+import com.ossowski.backend.user.model.User;
 import org.springframework.stereotype.Component;
 
 @Component

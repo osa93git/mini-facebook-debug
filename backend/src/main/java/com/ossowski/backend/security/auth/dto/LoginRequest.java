@@ -1,5 +1,5 @@
 
-package com.ossowski.backend.security.auth;
+package com.ossowski.backend.security.auth.dto;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.ossowski.backend.security.auth;
+package com.ossowski.backend.security.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

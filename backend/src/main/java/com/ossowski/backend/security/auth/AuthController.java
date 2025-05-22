@@ -1,5 +1,7 @@
 package com.ossowski.backend.security.auth;
 
+import com.ossowski.backend.security.auth.dto.LoginRequest;
+import com.ossowski.backend.security.auth.dto.LoginResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,11 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ossowski.backend.security.jwt.JwtService;
-import com.ossowski.backend.security.jwt.TokenType;
-import com.ossowski.backend.security.model.Token;
+import com.ossowski.backend.security.auth.jwt.JwtService;
+import com.ossowski.backend.security.token.TokenType;
+import com.ossowski.backend.security.token.Token;
 import com.ossowski.backend.security.service.TokenService;
-import com.ossowski.backend.user.User;
+import com.ossowski.backend.user.model.User;
 import com.ossowski.backend.user.UserRepository;
 
 import jakarta.servlet.http.Cookie;

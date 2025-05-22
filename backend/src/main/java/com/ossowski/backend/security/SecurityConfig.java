@@ -13,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.ossowski.backend.security.jwt.JwtAuthenticationFilter;
+import com.ossowski.backend.security.auth.jwt.JwtAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
@@ -33,6 +33,7 @@ public class SecurityConfig {
         .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
         .requestMatchers("/auth/**").permitAll()
+        .requestMatchers("/api/posts/all").permitAll()
         .requestMatchers("/users/me").authenticated()
         .anyRequest().authenticated()
         )

@@ -1,4 +1,4 @@
-package com.ossowski.backend.security.jwt;
+package com.ossowski.backend.security.auth.jwt;
 
 import java.io.IOException;
 

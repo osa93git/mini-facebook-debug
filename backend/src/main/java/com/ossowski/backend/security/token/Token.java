@@ -1,10 +1,9 @@
-package com.ossowski.backend.security.model;
+package com.ossowski.backend.security.token;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.ossowski.backend.security.jwt.TokenType;
-import com.ossowski.backend.user.User;
+import com.ossowski.backend.user.model.User;
 
 import jakarta.persistence.*;
 import lombok.*;

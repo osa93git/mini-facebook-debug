@@ -1,4 +1,4 @@
-package com.ossowski.backend.user;
+package com.ossowski.backend.user.dto;
 
 import java.util.UUID;
 

@@ -3,6 +3,9 @@ package com.ossowski.backend.user;
 import java.util.List;
 import java.util.UUID;
 
+import com.ossowski.backend.user.dto.UserMapper;
+import com.ossowski.backend.user.dto.UserPublicDto;
+import com.ossowski.backend.user.model.User;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
