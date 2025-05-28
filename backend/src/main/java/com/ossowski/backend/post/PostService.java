@@ -3,6 +3,8 @@ package com.ossowski.backend.post;
 import java.util.List;
 import java.util.UUID;
 
+import com.ossowski.backend.exceptions.post.PostEmptyTextAndUrlException;
+import com.ossowski.backend.exceptions.post.PostNotFoundException;
 import com.ossowski.backend.post.dto.PostDto;
 import com.ossowski.backend.post.dto.PostMapper;
 import com.ossowski.backend.post.dto.PostRequestDto;
@@ -23,12 +25,12 @@ public class PostService {
         this.postMapper = postMapper;
     }
 
-    public PostDto createPost(PostRequestDto newPostDto, User author){
+    public PostDto addPost(PostRequestDto newPostDto, User author){
         Post post = postMapper.createFromRequest(newPostDto, author);
     
         if((post.getText() == null || post.getText().isBlank()) &&
             (post.getMediaUrl() == null || post.getMediaUrl().isBlank())){
-                throw new IllegalStateException("Post must have either text or media");
+                throw new PostEmptyTextAndUrlException();
         }
         Post saved = postRepository.save(post);
         return postMapper.toDto(saved);
@@ -37,7 +39,7 @@ public class PostService {
     public PostDto getPost(UUID id){
         return postRepository.findById(id)
             .map(postMapper::toDto)
-            .orElseThrow(() -> new EntityNotFoundException("Post not found"));
+            .orElseThrow(() -> new PostNotFoundException(id));
     }
     public List<PostDto> getAllPosts(){
         return postRepository.findAll().stream()

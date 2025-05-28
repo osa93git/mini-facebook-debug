@@ -1,4 +1,4 @@
-# 🔧 Mini-Facebook – Backend
+## 🔧 Mini-Facebook – Backend
 
 This is the backend of the Mini-Facebook project – a REST API built with Spring Boot.  
 It handles user registration, profile management, and post operations.  
@@ -23,7 +23,16 @@ The backend communicates with a PostgreSQL database running inside a Docker cont
 com/ossowski/backend/
 ├── admin/         # Admin-specific features (e.g. user moderation, analytics)
 ├── auth/          # Authentication controller and DTOs
+├── comment/       # Comment entity, DTOs, service, controller
+├── exceptions/    # Custom exception classes and global handler
+│   ├── base/           # Abstract base exceptions (e.g. NotFoundException)
+│   ├── auth/           # Token-related exceptions
+│   ├── comment/        # Comment validation and lookup errors
+│   ├── post/           # Post-related business logic errors
+│   ├── user/           # User-related business logic errors
+│   └── GlobalExceptionHandler.java
 ├── init/          # DB seeder, test user data
+├── post/          # Post entity, DTOs, service, controller
 ├── security/      # Security configuration and logic
 │   ├── auth/       # Login, refresh endpoints
 │   ├── jwt/        # JWT token logic
@@ -48,6 +57,46 @@ com/ossowski/backend/
 
 ---
 
+### ✅ Implemented Features – Posts & Comments
+
+- `POST /posts` – create post (text and/or media)
+- `POST /comments` – create comment (optionally as reply)
+- Nested comment structure via `parent`/`replies`
+- Basic validation: no empty content, consistent reply-post structure
+
+---
+
+### ✅ Implemented Features – Exception Handling
+
+- Introduced custom exception classes grouped by domain:
+  - `UserNotFoundException`, `UserEmailAlreadyInUseException`
+  - `PostNotFoundException`, `PostEmptyTextAndUrlException`
+  - `CommentNotFoundException`, `InvalidCommentParentException`
+  - `TokenNotFoundException`, `InvalidTokenException`
+- Abstract base classes:
+  - `NotFoundException`, `BadRequestException` in `exceptions.base`
+- Global error handler: `GlobalExceptionHandler`
+  - Converts exceptions into consistent JSON responses
+  - Includes status, error message, timestamp
+
+#### Example response:
+
+```json
+{
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Post must contain at least text or media URL.",
+  "timestamp": "2025-05-27T15:42:11"
+}
+```
+
+#### Benefits:
+- Clear feedback for frontend
+- Easier debugging and test assertions
+- Centralized error handling
+
+---
+
 ### ✅ Implemented Features – Security
 
 - Integrated Spring Security with stateless JWT authentication
@@ -68,8 +117,7 @@ com/ossowski/backend/
 - Created `AdminController` with placeholder endpoint ("admin panel")
 - Added `Role.ADMIN` with selective access
 
-🔜 **Planned:**
-
+💜 **Planned:**
 - Admin-only endpoints to delete users
 - View visit logs
 
@@ -99,6 +147,7 @@ com/ossowski/backend/
 - Stateless JWT architecture ensures scalability
 - Full role-based access control (RBAC) built-in
 - Designed for separation of concerns via module-based packages
+- Exceptions are thrown directly from service layer and handled centrally
 
 ---
 

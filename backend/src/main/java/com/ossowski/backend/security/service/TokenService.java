@@ -3,6 +3,8 @@ package com.ossowski.backend.security.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.ossowski.backend.exceptions.auth.InvalidTokenException;
+import com.ossowski.backend.exceptions.auth.TokenNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.ossowski.backend.security.token.TokenType;
@@ -43,10 +45,6 @@ public class TokenService {
     public Token findValidRefreshToken(String tokenValue){
         return tokenRepository.findByToken(tokenValue)
             .filter(t -> !t.isExpired() && !t.isRevoked() && t.getTokenType() == TokenType.REFRESH)
-            .orElse(null);
-    }
-    public Optional<Token> getValidRefreshToken(String tokenValue){
-        return tokenRepository.findByToken(tokenValue)
-            .filter(t -> !t.isExpired() && !t.isRevoked() && t.getTokenType() == TokenType.REFRESH);
+            .orElseThrow(() -> new TokenNotFoundException(tokenValue));
     }
 }
