@@ -1,11 +1,13 @@
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
+import ProfilePage from "../pages/ProfilePage.tsx";
 
 const AppRouter = () => {
     return (
         <BrowserRouter>
             <Routes>
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/profile/me" element={<ProfilePage />} />
             </Routes>
         </BrowserRouter>
     );

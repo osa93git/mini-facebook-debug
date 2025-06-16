@@ -2,8 +2,11 @@ package com.ossowski.backend.security.auth.jwt;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import com.ossowski.backend.user.model.User;
@@ -16,25 +19,15 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 
-
-    // TODO: solve problem how long tokens must be alive 
-
     private static final String SECRET_KEY = "super-secret-key-whitch-is-long-enough-for-hmac256!";
-    private static final long EXPIRATION_MS = 1000 * 60 * 60 * 24;
+    //acces token alive for 15 minutes
+    private static final long EXPIRATION_MS = 1000 * 60 * 15;
+    //refresh token alive for 7 days
     private static final long REFRESH_EXPIRATION_MS = 1000 * 60 * 60 * 24 * 7;
 
     private Key getSigningKey(){
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
-    } 
-
-    // public String generateAccessToken(String subject){
-    //     return Jwts.builder()
-    //     .setSubject(subject)
-    //     .setIssuedAt(new Date())
-    //     .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
-    //     .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-    //     .compact();
-    // }
+    }
 
     public String generateAccessToken(User user){
         return Jwts.builder()
@@ -43,7 +36,7 @@ public class JwtService {
         .claim("firstName", user.getFirstName())
         .claim("lastName", user.getLastName())
         .claim("photo", user.getProfilePhotoUrl())
-        .claim("role", user.getRole().name())
+        .claim("roles", List.of("ROLE_" + user.getRole().name()))
         .setIssuedAt(new Date())
         .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_MS))
         .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -56,6 +49,18 @@ public class JwtService {
         .setExpiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION_MS))
         .signWith(getSigningKey(), SignatureAlgorithm.HS256)
         .compact();
+    }
+    public List<SimpleGrantedAuthority> extractAuthorities(String token){
+        Claims claims = extractAllClaims(token);
+        Object rawRoles = claims.get("roles");
+
+        if(rawRoles instanceof List<?> rolesList){
+            return rolesList.stream().filter(Objects::nonNull)
+                    .map(Object::toString)
+                    .map(SimpleGrantedAuthority::new)
+                    .toList();
+        }
+        return List.of();
     }
 
     public String extractSubject(String token){

@@ -53,4 +53,8 @@ public class Token {
     @JoinColumn(name = "owner_id", referencedColumnName= "id")
     private User owner;
 
+    @Override
+    public String toString() {
+        return token;
+    }
 }

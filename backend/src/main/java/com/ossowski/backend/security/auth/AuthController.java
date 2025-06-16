@@ -2,7 +2,10 @@ package com.ossowski.backend.security.auth;
 
 import com.ossowski.backend.security.auth.dto.LoginRequest;
 import com.ossowski.backend.security.auth.dto.LoginResponse;
+import org.apache.coyote.Response;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +25,8 @@ import com.ossowski.backend.user.UserRepository;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.time.Duration;
 
 @RestController
 @RequestMapping("/auth")
@@ -59,22 +64,32 @@ public class AuthController {
             .owner(user)
             .build());
 
-        Cookie cookie = new Cookie("refreshToken", refreshToken);
-        cookie.setHttpOnly(true);
-        //Only now to check cookie in the browser
-//        cookie.setSecure(true);
-        cookie.setSecure(false);
-        cookie.setPath("/auth/refresh");
-        cookie.setMaxAge(7 * 24 * 60 * 60);
-        response.addCookie(cookie);
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                //only for frontend testing
+//                .secure(true)
+                .secure(false)
+                .path("/")
+                .sameSite("Lax")
+                .maxAge(Duration.ofDays(7))
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 
         return ResponseEntity.ok(new LoginResponse(accessToken, null));
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<LoginResponse> refresh(@CookieValue("refreshToken") String refreshToken){
-        
+
+        try{
+            String subject = jwtService.extractSubject(refreshToken);
+        }catch(Exception e){
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         Token storedToken = tokenService.findValidRefreshToken(refreshToken);
+
         if(storedToken == null){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }

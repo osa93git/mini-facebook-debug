@@ -36,7 +36,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                     "Piotr",
                     "Ossowski",
                     "piotr@example.com",
-                    passwordEncoder.encode("haslo123")
+                        passwordEncoder.encode("haslo123")
             );
             User pawel = new User(
                     "Pawel",
