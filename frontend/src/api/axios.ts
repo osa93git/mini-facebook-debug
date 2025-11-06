@@ -1,8 +1,8 @@
 import axios, {AxiosHeaders} from 'axios';
-import type { AxiosRequestConfig, AxiosResponse } from 'axios';
+import type {AxiosRequestConfig, AxiosResponse} from 'axios';
 
 interface FailedRequest {
-    resolve: (token : string) => void;
+    resolve: (token: string) => void;
     reject: (error: unknown) => void;
 }
 
@@ -14,12 +14,11 @@ let isRefreshing = false;
 let failedQueue: FailedRequest[] = [];
 
 
-
-const processQueue = (error: unknown, token : string | null = null): void => {
+const processQueue = (error: unknown, token: string | null = null): void => {
     failedQueue.forEach(({resolve, reject}) => {
-        if(error || !token) {
+        if (error || !token) {
             reject(error);
-        }else{
+        } else {
             resolve(token!);
         }
     });
@@ -33,13 +32,20 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
+
+    const url = (config.url ?? '').toString()
+
+    if (url.includes('/auth/')) {
+        return config;
+    }
+
     const token = localStorage.getItem("accessToken");
 
-    if(!config.headers){
+    if (!config.headers) {
         config.headers = new AxiosHeaders();
     }
-    if(token && config.headers){
-        (config.headers as AxiosHeaders).set("Authorization", `Bearer ${token}` );
+    if (token && config.headers) {
+        (config.headers as AxiosHeaders).set("Authorization", `Bearer ${token}`);
     }
 
     return config;
@@ -49,10 +55,10 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
     (response) => response,
     async (error) => {
-        const originalRequest = error.config as AxiosRequestConfig & {_retry?: boolean};
+        const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
 
 
-        if((error.response?.status === 401 || error.response?.status === 403) && !originalRequest._retry) {
+        if ((error.response?.status === 401 || error.response?.status === 403) && !originalRequest._retry) {
             if (isRefreshing) {
                 return new Promise(function (resolve, reject) {
                     failedQueue.push({resolve, reject});
@@ -77,7 +83,7 @@ api.interceptors.response.use(
 
                 const newAccessToken = res.data.accessToken;
 
-                if(!newAccessToken){
+                if (!newAccessToken) {
                     throw new Error('No access token after refresh');
                 }
 
@@ -89,10 +95,7 @@ api.interceptors.response.use(
             } catch (error) {
                 processQueue(error, null);
                 localStorage.removeItem('accessToken');
-
-                setTimeout(() => {
-                    window.location.href = '/login';
-                },100);
+                window.location.href = '/login';
 
                 return Promise.reject(error);
             } finally {
@@ -101,6 +104,6 @@ api.interceptors.response.use(
         }
         return Promise.reject(error);
     }
-    );
+);
 
 export default api;

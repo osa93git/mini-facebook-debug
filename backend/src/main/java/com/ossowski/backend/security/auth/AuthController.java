@@ -46,30 +46,38 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request, HttpServletResponse response){
+
+        //checking if such a login and passwod combination exists
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
         User user = (User) authentication.getPrincipal();
 
+        //creating access and refresh token
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
+        //revoking all tokens
         tokenService.revokeAllUserTokens(user);
+
+        //creating refresh token
         tokenService.saveUserToken(user, Token.builder()
             .token(refreshToken)
             .tokenType(TokenType.REFRESH)
             .expired(false)
             .revoked(false)
             .owner(user)
-            .build());
+            .build()
+        );
 
+        //creating cookie with refresh token for browser
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
                 //only for frontend testing
 //                .secure(true)
                 .secure(false)
-                .path("/")
+                .path("/auth/refresh")
                 .sameSite("Lax")
                 .maxAge(Duration.ofDays(7))
                 .build();
@@ -82,18 +90,22 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<LoginResponse> refresh(@CookieValue("refreshToken") String refreshToken){
 
+        //extracting email from refreshrtoken
         try{
             String subject = jwtService.extractSubject(refreshToken);
         }catch(Exception e){
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
+        //finding valid refresh token
         Token storedToken = tokenService.findValidRefreshToken(refreshToken);
 
+        //response with exception if token doesn't exist or is expired
         if(storedToken == null){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        
+
+        //generating new access token
         User user = storedToken.getOwner();
         String newAccessToken = jwtService.generateAccessToken(user);
          return ResponseEntity.ok(new LoginResponse(newAccessToken, null));

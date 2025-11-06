@@ -20,21 +20,21 @@ public class TokenService {
         this.tokenRepository = tokenRepository;
     }
 
-    public void saveUserToken(User user, Token token){
+    public void saveUserToken(User user, Token token) {
         token.setOwner(user);
         tokenRepository.save(token);
     }
 
-    public void saveToken(Token token){
+    public void saveToken(Token token) {
         tokenRepository.save(token);
     }
 
-    public void revokeAllUserTokens(User user){
-        List<Token> validTokens = tokenRepository.findAllByOwnerAndExpiredFalseAndRevokedFalse(user); 
-    
-        if(validTokens.isEmpty()) return;
-        
-        validTokens.forEach( t -> {
+    public void revokeAllUserTokens(User user) {
+        List<Token> validTokens = tokenRepository.findAllByOwnerAndExpiredFalseAndRevokedFalse(user);
+
+        if (validTokens.isEmpty()) return;
+
+        validTokens.forEach(t -> {
             t.setRevoked(true);
             t.setExpired(true);
         });
@@ -42,9 +42,9 @@ public class TokenService {
         tokenRepository.saveAll(validTokens);
     }
 
-    public Token findValidRefreshToken(String tokenValue){
+    public Token findValidRefreshToken(String tokenValue) {
         return tokenRepository.findByToken(tokenValue)
-            .filter(t -> !t.isExpired() && !t.isRevoked() && t.getTokenType() == TokenType.REFRESH)
-            .orElseThrow(() -> new TokenNotFoundException(tokenValue));
+                .filter(t -> !t.isExpired() && !t.isRevoked() && t.getTokenType() == TokenType.REFRESH)
+                .orElseThrow(() -> new TokenNotFoundException(tokenValue));
     }
 }
