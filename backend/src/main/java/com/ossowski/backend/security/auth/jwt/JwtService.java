@@ -2,11 +2,10 @@ package com.ossowski.backend.security.auth.jwt;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 
+import com.ossowski.backend.user.model.Role;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +19,6 @@ import io.jsonwebtoken.security.Keys;
 
 public class JwtService {
 
-//    private static final String SECRET_KEY = "super-secret-key-whitch-is-long-enough-for-hmac256!";
-//    //acces token alive for 15 minutes
-//    private static final long EXPIRATION_MS = 1000 * 60 * 15;
-//    //refresh token alive for 7 days
-//    private static final long REFRESH_EXPIRATION_MS = 1000 * 60 * 60 * 24 * 7;
-
     private final JwtProperties props;
     private final Key signingKey;
 
@@ -38,27 +31,43 @@ public class JwtService {
         return signingKey;
     }
 
-    public String generateAccessToken(User user) {
-        return Jwts.builder()
-                .setIssuer("https://auth.ossowski.app")
-                .setSubject(user.getId().toString())
-//                .setSubject(user.getEmail())
+    public String generateAccessToken(User user){
+        Map<String, Object> claims = new HashMap<>();
+        String subject = user.getId().toString();
+        claims.put("email", user.getEmail());
+        claims.put("roles", user.getRoles().stream().map(Role::name).toList());
+        claims.put("type", "access");
 
-//                .claim("roles", List.of("ROLE_" + user.getRole().name()))
-                .claim("roles", user.getRoles().stream().map(role -> "ROLE_" + role.name()).toList())
-
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + props.getAccessTtl().toMillis()))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .compact();
+        return buildToken(
+                claims,
+                subject,
+                props.getAccessTtl().toMillis()
+        );
     }
 
     public String generateRefreshToken(User user) {
+        Map<String, Object> claims = new HashMap<>();
+        String subject = user.getId().toString();
+        claims.put("type", "refresh");
+
+        return buildToken(
+                claims,
+                subject,
+                props.getRefreshTtl().toMillis()
+        );
+
+    }
+
+    public String buildToken(Map<String, Object> claims, String subject, long ttlMs) {
+        Date now = new Date();
+        Date expiry = new Date(now.getTime() + ttlMs);
+
         return Jwts.builder()
-                .setSubject(user.getId().toString())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + props.getRefreshTtl().toMillis()))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(now)
+                .setExpiration(expiry)
+                .signWith(signingKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 

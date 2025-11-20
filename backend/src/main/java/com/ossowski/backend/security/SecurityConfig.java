@@ -22,14 +22,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
-//    private final JwtAuthenticationFilter jwtAuthFilter;
-//    private final UserDetailsService userDetailsService;
-//
-//
-//    public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter, UserDetailsService userDetailsService) {
-//        this.jwtAuthFilter = jwtAuthFilter;
-//        this.userDetailsService = userDetailsService;
-//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
@@ -47,7 +39,6 @@ public class SecurityConfig {
                         .accessDeniedHandler(jwtAccessDenied)   // 403
                 )
                 //own handlers above
-
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/auth/**",

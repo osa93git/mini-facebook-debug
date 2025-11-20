@@ -10,7 +10,6 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import static com.ossowski.backend.security.handler.SecurityAttributes.JWT_ERROR_MSG;

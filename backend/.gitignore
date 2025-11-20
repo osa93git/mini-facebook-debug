@@ -35,3 +35,14 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### whole project code for chatgpt
+**/project-code.txt
+
+# hide secrets
+.env
+.env.*
+# not hide example
+!.env.example
+
+

@@ -57,7 +57,6 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
 
-
         if ((error.response?.status === 401 || error.response?.status === 403) && !originalRequest._retry) {
             if (isRefreshing) {
                 return new Promise(function (resolve, reject) {
@@ -75,7 +74,7 @@ api.interceptors.response.use(
             isRefreshing = true;
 
             try {
-
+                console.log("[REFRESH] Access token expired → requesting new one...");
                 const res: AxiosResponse<RefreshResponse> = await api.post('/auth/refresh',
                     {},
                     {withCredentials: true}

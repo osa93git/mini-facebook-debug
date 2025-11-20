@@ -1,7 +1,9 @@
 package com.ossowski.backend.security.auth;
 
+import com.ossowski.backend.exceptions.auth.TokenNotFoundException;
 import com.ossowski.backend.security.auth.dto.LoginRequest;
 import com.ossowski.backend.security.auth.dto.LoginResponse;
+import io.jsonwebtoken.JwtException;
 import org.apache.coyote.Response;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -90,18 +92,19 @@ public class AuthController {
     @PostMapping("/refresh")
     public ResponseEntity<LoginResponse> refresh(@CookieValue("refreshToken") String refreshToken){
 
-        //extracting email from refreshrtoken
+        //validate JWT structure and expiration.
+        // If something is wrong it throws exception
         try{
-            String subject = jwtService.extractSubject(refreshToken);
-        }catch(Exception e){
+            jwtService.extractSubject(refreshToken);
+        }catch( JwtException | IllegalArgumentException e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        //finding valid refresh token
-        Token storedToken = tokenService.findValidRefreshToken(refreshToken);
-
-        //response with exception if token doesn't exist or is expired
-        if(storedToken == null){
+        //finding valid refresh token or return UNAUTHORIZED
+        Token storedToken;
+        try{
+            storedToken = tokenService.findValidRefreshToken(refreshToken);
+        }catch (TokenNotFoundException e){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 

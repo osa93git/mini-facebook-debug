@@ -100,6 +100,10 @@ public class User implements UserDetails {
     }
 
     public void setRoles(Set<Role> roles) {
+
+        if (this.roles == null) {
+            this.roles = new HashSet<>();
+        }
         this.roles.clear();
         if(roles != null) {
             this.roles.addAll(roles);
@@ -119,11 +123,6 @@ public class User implements UserDetails {
     public String toString() {
         return "User [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + "]";
     }
-
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
-//    }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream().map(role -> new SimpleGrantedAuthority( "ROLE_" + role.name())).collect(Collectors.toList());
@@ -153,6 +152,5 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return enabled;
     }
-
 
 }

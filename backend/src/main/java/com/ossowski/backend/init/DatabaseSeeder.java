@@ -5,12 +5,16 @@ import com.ossowski.backend.comment.model.Comment;
 import com.ossowski.backend.post.PostRepository;
 import com.ossowski.backend.post.model.MediaType;
 import com.ossowski.backend.post.model.Post;
+import com.ossowski.backend.user.model.Role;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.ossowski.backend.user.model.User;
 import com.ossowski.backend.user.UserRepository;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class DatabaseSeeder implements CommandLineRunner {
@@ -38,6 +42,13 @@ public class DatabaseSeeder implements CommandLineRunner {
                     "piotr@example.com",
                         passwordEncoder.encode("haslo123")
             );
+
+//            piotr.getRoles().add(Role.USER);
+
+            Set<Role> roles = new HashSet<>();
+            roles.add(Role.USER);
+            piotr.setRoles(roles);
+
             User pawel = new User(
                     "Pawel",
                     "Ossowski",
