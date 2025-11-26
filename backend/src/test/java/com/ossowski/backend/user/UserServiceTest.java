@@ -3,21 +3,19 @@ package com.ossowski.backend.user;
 import com.ossowski.backend.exceptions.user.UserCredentialsInvalidException;
 import com.ossowski.backend.exceptions.user.UserEmailAlreadyInUseException;
 import com.ossowski.backend.exceptions.user.UserNotFoundException;
+import com.ossowski.backend.security.service.CurrentUserService;
 import com.ossowski.backend.user.dto.UserMapper;
 import com.ossowski.backend.user.dto.UserPublicDto;
 import com.ossowski.backend.user.dto.UserRegisterRequestDto;
+import com.ossowski.backend.user.dto.UserUpdateRequestDto;
 import com.ossowski.backend.user.model.Role;
 import com.ossowski.backend.user.model.User;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -39,13 +37,11 @@ public class UserServiceTest {
     @Mock
     PasswordEncoder passwordEncoder;
 
+    @Mock
+    private CurrentUserService currentUserService;
+
     @InjectMocks
     private UserService userService;
-
-    @BeforeEach
-    void setUpSecurityContext(){
-        SecurityContextHolder.clearContext();
-    }
 
     @Test
     public void registerUser_shouldSaveNewUserWithEncodedPasswordAndUserRole(){
@@ -91,34 +87,23 @@ public class UserServiceTest {
     }
 
     @Test
-    void getCurrentUser_shouldUseEmailFromSecurityContext(){
+    void getCurrentUser_shouldUseEmailFromCurrentUserService(){
         String email = "piotr@example.com";
 
-        Authentication auth = mock(Authentication.class);
-        when(auth.getName()).thenReturn(email);
-
-        SecurityContext securityContext = mock(SecurityContext.class);
-        when(securityContext.getAuthentication()).thenReturn(auth);
-        SecurityContextHolder.setContext(securityContext);
+        when(currentUserService.getCurrentUserEmail()).thenReturn(email);
 
         User user = new User("Piotr", "Ossowski", email, "encoded");
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
         User result = userService.getCurrentUser();
-
         assertThat(result.getEmail()).isEqualTo(email);
     }
+
     @Test
     void getCurrentUser_shouldThrowWhenUserNotFound(){
         String email = "missing@example.com";
 
-        Authentication auth = mock(Authentication.class);
-        when(auth.getName()).thenReturn(email);
-
-        SecurityContext securityContext = mock(SecurityContext.class);
-        when(securityContext.getAuthentication()).thenReturn(auth);
-        SecurityContextHolder.setContext(securityContext);
-
+        when(currentUserService.getCurrentUserEmail()).thenReturn(email);
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> userService.getCurrentUser())
@@ -128,12 +113,7 @@ public class UserServiceTest {
     void changePassword_shouldUpdatePasswordWhenOldPasswordMatches(){
         String email = "piotr@example.com";
 
-        Authentication auth = mock(Authentication.class);
-        when(auth.getName()).thenReturn(email);
-
-        SecurityContext context = mock(SecurityContext.class);
-        when(context.getAuthentication()).thenReturn(auth);
-        SecurityContextHolder.setContext(context);
+        when(currentUserService.getCurrentUserEmail()).thenReturn(email);
 
         User user = new User("Piotr", "Ossowski", email, "encodedOld");
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
@@ -147,15 +127,9 @@ public class UserServiceTest {
 
     @Test
     void changePassword_shouldThrownWhenOldPasswordDoesNotMatch(){
-        String email = "piotr.example.com";
+        String email = "piotr@example.com";
 
-        Authentication auth = mock(Authentication.class);
-        when(auth.getName()).thenReturn(email);
-
-        SecurityContext context = mock(SecurityContext.class);
-        when(context.getAuthentication()).thenReturn(auth);
-
-        SecurityContextHolder.setContext(context);
+        when(currentUserService.getCurrentUserEmail()).thenReturn(email);
 
         User user = new User("Piotr", "Ossowski", email, "encodedOld");
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
@@ -163,5 +137,57 @@ public class UserServiceTest {
 
         assertThatThrownBy(() -> userService.changePassword("wrong", "new"))
                 .isInstanceOf(UserCredentialsInvalidException.class);
+    }
+
+    @Test void updateCurrentUser_shouldTrimAndUpdateFields(){
+        String email = "piotr@example.com";
+
+        when(currentUserService.getCurrentUserEmail()).thenReturn(email);
+
+        User user = new User("Piotr", "Old", email, "pass");
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+
+        UserUpdateRequestDto dto = new UserUpdateRequestDto(
+                "  Piotr  ",
+                " New ",
+                "https://photo ",
+                "Nowe bio"
+        );
+
+        when(userRepository.save(user)).thenReturn(user);
+        UserPublicDto publicDto = new UserPublicDto(
+               UUID.randomUUID(), "Piotr", "New", "https://photo", "Nowe bio"
+        );
+        when(userMapper.toPublicDto(user)).thenReturn(publicDto);
+
+        UserPublicDto result = userService.updateCurrentUser(dto);
+
+        assertThat(result.firstName()).isEqualTo("Piotr");
+        assertThat(result.lastName()).isEqualTo("New");
+        assertThat(result.profilePhotoUrl()).isEqualTo("https://photo");
+        assertThat(result.bio()).isEqualTo("Nowe bio");
+
+        assertThat(user.getFirstName()).isEqualTo("Piotr");
+        assertThat(user.getLastName()).isEqualTo("New");
+        assertThat(user.getProfilePhotoUrl()).isEqualTo("https://photo");
+        assertThat(user.getBio()).isEqualTo("Nowe bio");
+
+    }
+
+    @Test
+    void updateCurrentUser_shouldThrowWhenUserNotFound(){
+        String email = "missing@example.com";
+
+        when(currentUserService.getCurrentUserEmail()).thenReturn(email);
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        UserUpdateRequestDto dto = new UserUpdateRequestDto(
+                "Piotr",
+                "Ossowski",
+                "https://photo",
+                "bio"
+        );
+        assertThatThrownBy(() -> userService.updateCurrentUser(dto))
+                .isInstanceOf(UserNotFoundException.class);
     }
 }

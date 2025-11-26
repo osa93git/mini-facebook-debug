@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.ossowski.backend.exceptions.user.UserCredentialsInvalidException;
 import com.ossowski.backend.exceptions.user.UserEmailAlreadyInUseException;
 import com.ossowski.backend.exceptions.user.UserNotFoundException;
+import com.ossowski.backend.security.service.CurrentUserService;
 import com.ossowski.backend.user.dto.UserRegisterRequestDto;
 import com.ossowski.backend.user.dto.UserMapper;
 import com.ossowski.backend.user.dto.UserPublicDto;
@@ -23,12 +24,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final CurrentUserService currentUserService;
 
-
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, CurrentUserService currentUserService) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.currentUserService = currentUserService;
     }
 
     public UserPublicDto registerUser(UserRegisterRequestDto userToRegister) {
@@ -67,11 +69,19 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
 
-    public User getCurrentUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+//    public User getCurrentUser() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String email = authentication.getName();
+//        return userRepository.findByEmail(email)
+//                .orElseThrow(() -> new UserNotFoundException(email));
+//    }
+
+
+    public User getCurrentUser(){
+        String email = currentUserService.getCurrentUserEmail();
+
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException(email));
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + email));
     }
 
     public UserPublicDto updateCurrentUser(UserUpdateRequestDto dto) {
@@ -105,7 +115,10 @@ public class UserService {
     }
 
     public void changePassword(String oldPassword, String newPassword) {
-        User user = getCurrentUser();
+        String email = currentUserService.getCurrentUserEmail();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(email));
 
         if(!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new UserCredentialsInvalidException();
@@ -133,7 +146,4 @@ public class UserService {
                 .map(userMapper::toPublicDto)
                 .toList();
     }
-
-
-
 }
