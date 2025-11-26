@@ -41,7 +41,7 @@ public class SecurityConfig {
                 //own handlers above
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/auth/**",
+                        .requestMatchers("api/auth/**",
                                 "/api/users/register",
                                 "/api/users/public").permitAll()
                         .requestMatchers("/users/me").authenticated()

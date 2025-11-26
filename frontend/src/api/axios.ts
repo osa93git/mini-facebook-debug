@@ -75,7 +75,7 @@ api.interceptors.response.use(
 
             try {
                 console.log("[REFRESH] Access token expired → requesting new one...");
-                const res: AxiosResponse<RefreshResponse> = await api.post('/auth/refresh',
+                const res: AxiosResponse<RefreshResponse> = await api.post('api/auth/refresh',
                     {},
                     {withCredentials: true}
                 );

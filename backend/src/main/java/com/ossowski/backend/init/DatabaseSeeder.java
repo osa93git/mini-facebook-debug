@@ -34,7 +34,6 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-
         if (userRepository.count() == 0) {
             User piotr = new User(
                     "Piotr",
@@ -42,8 +41,6 @@ public class DatabaseSeeder implements CommandLineRunner {
                     "piotr@example.com",
                         passwordEncoder.encode("haslo123")
             );
-
-//            piotr.getRoles().add(Role.USER);
 
             Set<Role> roles = new HashSet<>();
             roles.add(Role.USER);
@@ -64,8 +61,6 @@ public class DatabaseSeeder implements CommandLineRunner {
             userRepository.save(piotr);
             userRepository.save(pawel);
             userRepository.save(piotr2);
-
-
 
             Post post = new Post();
             post.setAuthor(piotr);

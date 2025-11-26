@@ -31,7 +31,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.time.Duration;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("api/auth")
 public class AuthController {
     
     private final AuthenticationManager authenticationManager;
